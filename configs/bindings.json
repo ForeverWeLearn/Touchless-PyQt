@@ -1,0 +1,30 @@
+{
+  "Swipe Right": {
+    "gesture1": "LEFT_ALL",
+    "gesture2": "OPEN",
+    "actions": [
+      "Arrow Left"
+    ]
+  },
+  "Swipe Left": {
+    "gesture1": "OPEN",
+    "gesture2": "LEFT_ALL",
+    "actions": [
+      "Arrow Right"
+    ]
+  },
+  "Swipe Down": {
+    "gesture1": "OPEN",
+    "gesture2": "GRAB",
+    "actions": [
+      "Arrow Up"
+    ]
+  },
+  "Swipe Up": {
+    "gesture1": "GRAB",
+    "gesture2": "OPEN",
+    "actions": [
+      "Arrow Down"
+    ]
+  }
+}

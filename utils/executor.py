@@ -12,15 +12,15 @@ class ActionExecutor:
 
     def __call__(self, action_list) -> bool:
         executed = False
-        for action_name, action_data in self.actions.items():
-            if action_name in action_list:
-                if self.should_execute(action_name):
+        for action_id, action_data in self.actions.items():
+            if action_id in action_list:
+                if self.should_execute(action_id):
                     executed = True
                     self.last_execute_time = time()
-                    print(f"Execute: {action_name} {action_data}")
+                    print(f"Execute: {action_data}")
                     self.execute(action_data)
                 else:
-                    print(f"Denied: {action_name}")
+                    print(f"Denied: {action_id}")
         return executed
 
     # Not yet completed

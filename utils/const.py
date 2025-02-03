@@ -20,7 +20,7 @@ class Mode(Enum):
 
 class Action(Enum):
     HOTKEY = "HOTKEY"
-    BUILTIN = "BUILTIN"
+    FUNCTION = "FUNCTION"
     COMMAND = "COMMAND"
 
 

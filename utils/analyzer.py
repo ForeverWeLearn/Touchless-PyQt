@@ -70,7 +70,7 @@ class GestureAnalyzer:
 
         for _, binding_data in self.bindings.items():
             if gesture1 == binding_data["gesture1"] and gesture2 == binding_data["gesture2"]:
-                success = self.executor(binding_data["actions"])
+                success = self.executor(binding_data["action"])
                 if success:
                     self.history_full = False
                     self.time_history.clear()

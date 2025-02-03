@@ -7,8 +7,12 @@ def read_json(file_path: str) -> dict:
         return load(file)
 
 
+def read_gestures() -> list:
+    return read_json("./model/gesture_classifier/gesture_classifier_labels.json")
+
+
 class ActionReader:
-    def __init__(self, file_path: str):
+    def __init__(self, file_path="./configs/actions.json"):
         self.file_path = file_path
         self.read()
 
@@ -23,9 +27,12 @@ class ActionReader:
                 d[key] = val
         return d
 
+    def get_names(self) -> list:
+        return list(self.actions.keys())
+
 
 class BindingReader:
-    def __init__(self, file_path: str):
+    def __init__(self, file_path="./configs/bindings.json"):
         self.file_path = file_path
         self.read()
 
@@ -35,7 +42,7 @@ class BindingReader:
 
 
 class SettingReader:
-    def __init__(self, file_path: str):
+    def __init__(self, file_path="./configs/settings.json"):
         self.file_path = file_path
         self.read()
 

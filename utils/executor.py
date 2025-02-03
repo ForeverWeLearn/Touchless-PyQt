@@ -30,9 +30,8 @@ class ActionExecutor:
             return False
         return True
 
-    def execute_hotkey(self, hotkey_list: list):
-        for keys in hotkey_list:
-            hotkey(keys)
+    def execute_hotkey(self, keys: list):
+        hotkey(keys)
 
     def execute_built_in(self, function_name):
         try:
@@ -54,7 +53,7 @@ class ActionExecutor:
             case Action.HOTKEY.name:
                 self.execute_hotkey(action_value)
 
-            case Action.BUILTIN.name:
+            case Action.FUNCTION.name:
                 self.execute_built_in(action_value)
 
             case Action.COMMAND.name:

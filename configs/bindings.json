@@ -2,29 +2,21 @@
   "Swipe Right": {
     "gesture1": "LEFT_ALL",
     "gesture2": "OPEN",
-    "actions": [
-      "000004"
-    ]
+    "action": "000004"
   },
   "Swipe Left": {
     "gesture1": "OPEN",
     "gesture2": "LEFT_ALL",
-    "actions": [
-      "000005"
-    ]
+    "action": "000005"
   },
   "Swipe Down": {
     "gesture1": "OPEN",
     "gesture2": "GRAB",
-    "actions": [
-      "000006"
-    ]
+    "action": "000006"
   },
   "Swipe Up": {
     "gesture1": "GRAB",
     "gesture2": "OPEN",
-    "actions": [
-      "000007"
-    ]
+    "action": "000007"
   }
 }

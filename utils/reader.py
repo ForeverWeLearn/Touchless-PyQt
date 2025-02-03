@@ -27,8 +27,16 @@ class ActionReader:
                 d[key] = val
         return d
 
-    def get_names(self) -> list:
+    def get_ids(self) -> list:
         return list(self.actions.keys())
+    
+    def get_names(self) -> list:
+        return [data["name"] for data in self.actions.values()]
+    
+    def get_avaiable_id(self) -> str:
+        ids = list(map(int, self.get_ids()))
+        avaiable_id = max(ids) + 1
+        return str(avaiable_id).zfill(6)
 
 
 class BindingReader:

@@ -1,42 +1,50 @@
 {
-  "Stop AI Engine": {
+  "000000": {
+    "name": "Stop AI Engine",
     "type": "FUNCTION",
     "value": "stop_ai_engine"
   },
-  "Pause AI Engine": {
+  "000001": {
+    "name": "Pause AI Engine",
     "type": "FUNCTION",
     "value": "pause_ai_engine"
   },
-  "Open CMD": {
+  "000002": {
+    "name": "Open CMD",
     "type": "COMMAND",
     "value": "cmd"
   },
-  "Close or Shutdown": {
+  "000003": {
+    "name": "Close Window",
     "type": "HOTKEY",
     "value": [
       "alt",
       "f4"
     ]
   },
-  "Arrow Left": {
+  "000004": {
+    "name": "Arrow Left",
     "type": "HOTKEY",
     "value": [
       "left"
     ]
   },
-  "Arrow Right": {
+  "000005": {
+    "name": "Arrow Right",
     "type": "HOTKEY",
     "value": [
       "right"
     ]
   },
-  "Arrow Up": {
+  "000006": {
+    "name": "Arrow Up",
     "type": "HOTKEY",
     "value": [
       "up"
     ]
   },
-  "Arrow Down": {
+  "000007": {
+    "name": "Arrow Down",
     "type": "HOTKEY",
     "value": [
       "down"

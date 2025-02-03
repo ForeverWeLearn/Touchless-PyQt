@@ -1,10 +1,10 @@
 {
   "Stop AI Engine": {
-    "type": "BUILTIN",
+    "type": "FUNCTION",
     "value": "stop_ai_engine"
   },
   "Pause AI Engine": {
-    "type": "BUILTIN",
+    "type": "FUNCTION",
     "value": "pause_ai_engine"
   },
   "Open CMD": {
@@ -14,45 +14,32 @@
   "Close or Shutdown": {
     "type": "HOTKEY",
     "value": [
-      [
-        "alt",
-        "f4"
-      ],
-      [
-        "enter"
-      ]
+      "alt",
+      "f4"
     ]
   },
   "Arrow Left": {
     "type": "HOTKEY",
     "value": [
-      [
-        "left"
-      ]
+      "left"
     ]
   },
   "Arrow Right": {
     "type": "HOTKEY",
     "value": [
-      [
-        "right"
-      ]
+      "right"
     ]
   },
   "Arrow Up": {
     "type": "HOTKEY",
     "value": [
-      [
-        "up"
-      ]
+      "up"
     ]
   },
   "Arrow Down": {
     "type": "HOTKEY",
     "value": [
-      [
-        "down"
-      ]
+      "down"
     ]
   }
 }

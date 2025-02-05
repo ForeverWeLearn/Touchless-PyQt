@@ -100,9 +100,9 @@ class Ui_ActionItemFrame(object):
         ActionItemFrame.setWindowTitle(QCoreApplication.translate("ActionItemFrame", u"Frame", None))
         self.Name.setText("")
         self.Name.setPlaceholderText(QCoreApplication.translate("ActionItemFrame", u"Name", None))
-        self.Type.setItemText(0, QCoreApplication.translate("ActionItemFrame", u"Hotkey", None))
-        self.Type.setItemText(1, QCoreApplication.translate("ActionItemFrame", u"Function", None))
-        self.Type.setItemText(2, QCoreApplication.translate("ActionItemFrame", u"Command", None))
+        self.Type.setItemText(0, QCoreApplication.translate("ActionItemFrame", u"HOTKEY", None))
+        self.Type.setItemText(1, QCoreApplication.translate("ActionItemFrame", u"FUNCTION", None))
+        self.Type.setItemText(2, QCoreApplication.translate("ActionItemFrame", u"COMMAND", None))
 
         self.DeleteBtn.setText(QCoreApplication.translate("ActionItemFrame", u"\u2715", None))
     # retranslateUi

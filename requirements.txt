@@ -1,4 +1,5 @@
 whl/tflite_runtime-2.13.0-cp311-cp311-win_amd64.whl
+whl/pyqtdarktheme-2.1.0-py3-none-any.whl
 pyside6
 opencv-python
 pyautogui

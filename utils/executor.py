@@ -10,21 +10,22 @@ class ActionExecutor:
 
         self.last_execute_time: float = 0
 
-    def __call__(self, action_list) -> bool:
+    def __call__(self, action_id) -> bool:
         executed = False
-        for action_id, action_data in self.actions.items():
-            if action_id in action_list:
-                if self.should_execute(action_id):
-                    executed = True
-                    self.last_execute_time = time()
-                    print(f"Execute: {action_data}")
-                    self.execute(action_data)
-                else:
-                    print(f"Denied: {action_id}")
+        action_name = self.actions[action_id]["name"]
+
+        if self.should_execute(action_id):
+            self.last_execute_time = time()
+            print(f"Execute: {action_name}")
+            self.execute(self.actions[action_id])
+            executed = True
+        else:
+            print(f"Denied: {action_name}")
+        
         return executed
 
     # Not yet completed
-    def should_execute(self, action_name: str) -> bool:
+    def should_execute(self, action_id: str) -> bool:
         t = time()
         if t - self.last_execute_time < 2:
             return False
@@ -46,18 +47,15 @@ class ActionExecutor:
             print(e)
 
     def execute(self, action_data: dict):
-        action_type = action_data["type"]
-        action_value = action_data["value"]
-
-        match action_type:
+        match action_data["type"]:
             case Action.HOTKEY.name:
-                self.execute_hotkey(action_value)
+                self.execute_hotkey(action_data["value"])
 
             case Action.FUNCTION.name:
-                self.execute_built_in(action_value)
+                self.execute_built_in(action_data["value"])
 
             case Action.COMMAND.name:
-                self.execute_command(action_value)
+                self.execute_command(action_data["value"])
 
             case _:
                 print("Invalid action type!")

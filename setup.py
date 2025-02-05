@@ -1,9 +1,9 @@
 from cx_Freeze import setup, Executable
 
 
-include_files = ["icon.ico", "./configs", "./model"]
+include_files = ["./imgs", "./configs", "./model"]
 excludes = ["tensorflow"]
-target = Executable(script="./engine.py", base="Win32GUI")
+target = Executable(script="./app.py", base="Win32GUI")
 
 
 setup(

@@ -10,13 +10,14 @@ import cv2
 class Engine:
     def __init__(
         self,
-        gestures: list,
-        actions: dict,
-        bindings: dict,
+        gestures: list = reader.read_gestures(),
+        actions: dict = reader.ActionReader().read(),
+        bindings: dict = reader.BindingReader().read(),
         cap_device=0,
         cap_width=960,
         cap_height=540,
         mode=Mode.NORMAL,
+        debug_mode=True,
         debug_window=False,
         min_detection_confidence=0.8,
         min_tracking_confidence=0.5,
@@ -28,6 +29,7 @@ class Engine:
         self.cap_width = cap_width
         self.cap_height = cap_height
         self.mode = mode
+        self.debug_mode = debug_mode
         self.debug_window = debug_window
         self.min_detection_confidence = min_detection_confidence
         self.min_tracking_confidence = min_tracking_confidence
@@ -95,7 +97,7 @@ class Engine:
                 self._right_analyzer(gesture_id)
 
             # Draw
-            if self.debug_window:
+            if self.debug_mode:
                 draw.draw_hand(image, bbox, keypoints)
                 draw.draw_info(image, bbox, handedness, self.gestures[gesture_id])
 
@@ -130,18 +132,7 @@ class Engine:
 
 
 def main():
-    engine = Engine(
-        gestures=reader.read_gestures(),
-        actions=reader.ActionReader().read(),
-        bindings=reader.BindingReader().read(),
-        cap_device=0,
-        cap_width=960,
-        cap_height=540,
-        mode=Mode.NORMAL,
-        debug_window=True,
-        min_detection_confidence=0.8,
-        min_tracking_confidence=0.5,
-    )
+    engine = Engine(debug_window=True)
 
     while True:
         result = engine()

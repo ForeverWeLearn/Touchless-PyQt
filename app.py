@@ -6,25 +6,47 @@ from PySide6.QtWidgets import (
     QComboBox,
     QKeySequenceEdit,
 )
-from PySide6.QtCore import QStringListModel
-from PySide6.QtGui import QPixmap, QKeySequence
+from PySide6.QtCore import Qt, Signal, Slot, QThread
+from PySide6.QtGui import QPixmap, QKeySequence, QImage
 
-from gui.settingpage import Ui_SettingPageFrame
-from gui.bindingpage import Ui_BindingPageFrame
-from gui.bindingitem import Ui_BindingItemFrame
-from gui.actionpage import Ui_ActionPageFrame
-from gui.actionitem import Ui_ActionItemFrame
-from gui.mainwindow import Ui_MainWindow
-from gui.homepage import Ui_HomePageFrame
+from gui.v1.settingpage import Ui_SettingPageFrame
+from gui.v1.bindingpage import Ui_BindingPageFrame
+from gui.v1.bindingitem import Ui_BindingItemFrame
+from gui.v1.actionpage import Ui_ActionPageFrame
+from gui.v1.actionitem import Ui_ActionItemFrame
+from gui.v1.mainwindow import Ui_MainWindow
+from gui.v1.homepage import Ui_HomePageFrame
 
 from utils.reader import ActionReader, BindingReader, read_gestures
+from utils.writer import write_actions, write_bindings
 from utils.const import Action
+from utils.algo import generate_random_string
 
 import sys
 
 
+ID_LENGTH = 12
+ACTION_READER = ActionReader()
+BINDING_READER = BindingReader()
 GESTURES = read_gestures()
 FUNCTIONS = ["pause_ai_engine", "stop_ai_engine"]
+
+actions = ACTION_READER.read()
+bindings = BINDING_READER.read()
+action_names = ACTION_READER.get_names()
+
+
+def read_configs():
+    global actions
+    global bindings
+    global action_names
+    actions = ACTION_READER.read()
+    bindings = BINDING_READER.read()
+    action_names = ACTION_READER.get_names()
+
+
+def is_valid_id(id: str):
+    return len(id) == ID_LENGTH
 
 
 def pause_ai_engine():
@@ -37,31 +59,83 @@ def stop_ai_engine():
     pass
 
 
+class EngineThread(QThread):
+    updateFrame = Signal(QImage)
+
+    def __init__(self, parent=None):
+        QThread.__init__(self, parent)
+
+        from engine import Engine
+
+        self.engine = Engine()
+
+        self.status = True
+
+    def prepare(self):
+        self.engine.prepare()
+
+    def run(self):
+        while self.status:
+            image = self.engine()
+            if image is None:
+                sys.exit(-1)
+
+            h, w, ch = image.shape
+            qimage = QImage(image.data, w, h, ch * w, QImage.Format.Format_RGB888)
+            scaled_img = qimage.scaled(640, 480, Qt.KeepAspectRatio)
+
+            self.updateFrame.emit(scaled_img)
+
+        sys.exit(-1)
+
+
 class BindingItem(QFrame, Ui_BindingItemFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, id=""):
         super().__init__(parent)
         self.setupUi(self)
+
+        if not is_valid_id(id):
+            self.id = generate_random_string(ID_LENGTH)
+        else:
+            self.id = id
 
         self.Gesture1.addItems(GESTURES)
         self.Gesture2.addItems(GESTURES)
+        self.Action.addItems(action_names)
 
         self.DeleteBtn.clicked.connect(self.deleteLater)
 
-    def load_data(self, name: str, data: dict, action_names: list, actions: dict):
-        self.Name.setText(name)
+    def reload(self):
+        self.Action.clear()
+        self.Action.addItems(action_names)
+
+    def load_data(self, data: dict):
+        self.Name.setText(data["name"])
         self.Gesture1.setCurrentIndex(GESTURES.index(data["gesture1"]))
         self.Gesture2.setCurrentIndex(GESTURES.index(data["gesture2"]))
-        self.Action.addItems(action_names)
-        action_name = actions[data["action"]]["name"]
-        self.Action.setCurrentIndex(action_names.index(action_name))
+        action = actions.get(data["action_id"])
+        if action:
+            self.Action.setCurrentIndex(action_names.index(action["name"]))
+
+    def get_data(self):
+        data = {
+            "name": self.Name.text(),
+            "gesture1": self.Gesture1.currentText(),
+            "gesture2": self.Gesture2.currentText(),
+            "action_id": ACTION_READER.get_id_by_name(self.Action.currentText()),
+        }
+        return data
 
 
 class ActionItem(QFrame, Ui_ActionItemFrame):
-    def __init__(self, parent, id: str):
+    def __init__(self, parent, id=""):
         super().__init__(parent)
         self.setupUi(self)
 
-        self.id = id
+        if not is_valid_id(id):
+            self.id = generate_random_string(ID_LENGTH)
+        else:
+            self.id = id
 
         self.Hotkey = QKeySequenceEdit()
         self.Function = QComboBox()
@@ -79,13 +153,29 @@ class ActionItem(QFrame, Ui_ActionItemFrame):
         if data["type"] == Action.HOTKEY.name:
             self.set_type(0)
             keys: list = data["value"]
-            self.Hotkey.setKeySequence(QKeySequence("+".join(keys)))
+            self.Hotkey.setKeySequence(QKeySequence(keys))
         elif data["type"] == Action.FUNCTION.name:
             self.set_type(1)
             self.Function.setCurrentIndex(FUNCTIONS.index(data["value"]))
         elif data["type"] == Action.COMMAND.name:
             self.set_type(2)
             self.Command.setText(data["value"])
+
+    def get_data(self):
+        data = {
+            "name": self.Name.text(),
+            "type": self.Type.currentText(),
+            "value": self.get_value(),
+        }
+        return data
+
+    def get_value(self):
+        if self.Type.currentIndex() == 0:
+            return self.Hotkey.keySequence().toString()
+        elif self.Type.currentIndex() == 1:
+            return self.Function.currentText()
+        elif self.Type.currentIndex() == 2:
+            return self.Command.text()
 
     def set_type(self, index=-1):
         if index == -1:
@@ -112,20 +202,20 @@ class BindingPage(QFrame, Ui_BindingPageFrame):
         super().__init__(parent)
         self.setupUi(self)
 
-        self.binding_reader = BindingReader()
-        self.action_reader = ActionReader()
-        self.action_names = self.action_reader.get_names()
-
         self.NewBtn.clicked.connect(self.add_binding)
         self.SaveBtn.clicked.connect(self.save_bindings)
 
         self.load_bindings()
 
+    def reload(self):
+        item: BindingItem
+        for item in self.findChildren(BindingItem):
+            item.reload()
+
     def load_bindings(self):
-        bindings = self.binding_reader.read()
-        for name, data in bindings.items():
-            item = BindingItem(self.BindingListFrame)
-            item.load_data(name, data, self.action_names, self.action_reader.actions)
+        for id, data in bindings.items():
+            item = BindingItem(self.BindingListFrame, id)
+            item.load_data(data)
             self.add_binding(item)
         pass
 
@@ -134,16 +224,25 @@ class BindingPage(QFrame, Ui_BindingPageFrame):
             item = BindingItem(self.BindingListFrame)
         self.BindingListLayout.addWidget(item)
 
+    def get_bindings(self):
+        data = {}
+        item: BindingItem
+        for item in self.findChildren(BindingItem):
+            item_data = item.get_data()
+            data[item.id] = item_data
+        return data
+
     def save_bindings(self):
+        saved_bindings = self.get_bindings()
+        write_bindings(saved_bindings)
+        print(saved_bindings)
         print("Saved!")
-        pass
+
 
 class ActionPage(QFrame, Ui_ActionPageFrame):
     def __init__(self, parent):
         super().__init__(parent)
         self.setupUi(self)
-
-        self.action_reader = ActionReader()
 
         self.NewBtn.clicked.connect(self.add_action)
         self.SaveBtn.clicked.connect(self.save_actions)
@@ -151,7 +250,6 @@ class ActionPage(QFrame, Ui_ActionPageFrame):
         self.load_actions()
 
     def load_actions(self):
-        actions = self.action_reader.read()
         for id, data in actions.items():
             item = ActionItem(self.ActionListFrame, id)
             item.load_data(data)
@@ -159,14 +257,24 @@ class ActionPage(QFrame, Ui_ActionPageFrame):
 
     def add_action(self, item=0):
         if item == 0:
-            item = ActionItem(
-                self.ActionListFrame, self.action_reader.get_avaiable_id()
-            )
+            item = ActionItem(self.ActionListFrame)
         self.ActionListLayout.addWidget(item)
 
+    def get_actions(self):
+        data = {}
+        item: ActionItem
+        for item in self.findChildren(ActionItem):
+            item_data = item.get_data()
+            data[item.id] = item_data
+        return data
+
     def save_actions(self):
-        print("Save")
-        pass
+        saved_actions = self.get_actions()
+        write_actions(saved_actions)
+        print(saved_actions)
+        print("Saved!")
+        read_configs()
+
 
 class SettingPage(QFrame, Ui_SettingPageFrame):
     def __init__(self, parent):
@@ -181,6 +289,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setWindowTitle("Application")
         self.setWindowIcon(QPixmap("./imgs/icon.ico"))
 
+        self.engineThread = EngineThread(self)
+        self.engineThread.finished.connect(self.close)
+        self.engineThread.updateFrame.connect(self.setImage)
+
         self.HomePageFrame = HomePage(self.PageContentFrame)
         self.BindingPageFrame = BindingPage(self.PageContentFrame)
         self.ActionPageFrame = ActionPage(self.PageContentFrame)
@@ -191,7 +303,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.ActionBtn.clicked.connect(lambda: self.load_page(self.ActionPageFrame))
         self.SettingBtn.clicked.connect(lambda: self.load_page(self.SettingPageFrame))
 
+        self.HomePageFrame.StartBtn.clicked.connect(self.engineThread.run)
+        self.HomePageFrame.StopBtn.clicked.connect(self.engineThread.terminate)
+        self.ActionPageFrame.SaveBtn.clicked.connect(self.BindingPageFrame.reload)
+
         self.load_page(self.HomePageFrame)
+
+        self.engineThread.prepare()
+
+    @Slot(QImage)
+    def setImage(self, image):
+        self.HomePageFrame.VideoLabel.setPixmap(QPixmap.fromImage(image))
 
     def load_page(self, page):
         if self.HomePageFrame is not page:

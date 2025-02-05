@@ -1,15 +1,15 @@
 {
   "EgNUHhOsuhsl": {
+    "name": "Swipe Up",
+    "gesture1": "GRAB",
+    "gesture2": "OPEN",
+    "action_id": "clUnLPiRAoTp"
+  },
+  "lkWBVcIZkzPp": {
     "name": "Swipe Down",
     "gesture1": "OPEN",
     "gesture2": "GRAB",
     "action_id": "sFyfDTyhZARz"
-  },
-  "lkWBVcIZkzPp": {
-    "name": "Swipe Right",
-    "gesture1": "LEFT_ALL",
-    "gesture2": "OPEN",
-    "action_id": "LaQzvAqKvrwE"
   },
   "rrByrAdJDZLp": {
     "name": "Swipe Left",
@@ -18,9 +18,9 @@
     "action_id": "nHbxNdUIZHNe"
   },
   "ORmcOWKiJjUI": {
-    "name": "Swipe Up",
-    "gesture1": "GRAB",
+    "name": "Swipe Right",
+    "gesture1": "LEFT_ALL",
     "gesture2": "OPEN",
-    "action_id": "clUnLPiRAoTp"
+    "action_id": "LaQzvAqKvrwE"
   }
 }

@@ -32,12 +32,12 @@ class ActionReader:
     
     def get_names(self) -> list:
         return [data["name"] for data in self.actions.values()]
-    
-    def get_avaiable_id(self) -> str:
-        ids = list(map(int, self.get_ids()))
-        avaiable_id = max(ids) + 1
-        return str(avaiable_id).zfill(6)
 
+    def get_id_by_name(self, name):
+        for id, data in self.actions.items():
+            if data["name"] == name:
+                return id
+        return "No way! How?"
 
 class BindingReader:
     def __init__(self, file_path="./configs/bindings.json"):
@@ -47,6 +47,12 @@ class BindingReader:
     def read(self) -> dict:
         self.bindings = read_json(self.file_path)
         return self.bindings
+
+    def get_ids(self) -> list:
+        return list(self.bindings.keys())
+    
+    def get_names(self) -> list:
+        return [data["name"] for data in self.bindings.values()]
 
 
 class SettingReader:

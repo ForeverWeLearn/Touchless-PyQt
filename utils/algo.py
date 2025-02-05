@@ -1,7 +1,13 @@
 from itertools import chain
+from string import ascii_letters
+from random import choices
 from copy import deepcopy
 import numpy as np
 import cv2
+
+
+def generate_random_string(n: int):
+    return ''.join(choices(ascii_letters, k=n))
 
 
 def calc_bounding_box(points):

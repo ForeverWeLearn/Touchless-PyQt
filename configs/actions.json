@@ -1,53 +1,42 @@
 {
-  "000": {
+  "ETBbcnfnqsBF": {
     "name": "Stop AI Engine",
-    "type": "FUNCTION",
+    "type": "Function",
     "value": "stop_ai_engine"
   },
-  "001": {
+  "uiFhNKWoJeLN": {
     "name": "Pause AI Engine",
-    "type": "FUNCTION",
+    "type": "Function",
     "value": "pause_ai_engine"
   },
-  "002": {
+  "EhcJSMEYPfML": {
     "name": "Open CMD",
-    "type": "COMMAND",
+    "type": "Command",
     "value": "cmd"
   },
-  "003": {
+  "ZqhdxtnXFmlI": {
     "name": "Close Window",
-    "type": "HOTKEY",
-    "value": [
-      "alt",
-      "f4"
-    ]
+    "type": "Hotkey",
+    "value": "Alt+F4"
   },
-  "004": {
+  "LaQzvAqKvrwE": {
     "name": "Arrow Left",
-    "type": "HOTKEY",
-    "value": [
-      "left"
-    ]
+    "type": "Hotkey",
+    "value": "Left"
   },
-  "005": {
+  "nHbxNdUIZHNe": {
     "name": "Arrow Right",
-    "type": "HOTKEY",
-    "value": [
-      "right"
-    ]
+    "type": "Hotkey",
+    "value": "Right"
   },
-  "006": {
+  "sFyfDTyhZARz": {
     "name": "Arrow Up",
-    "type": "HOTKEY",
-    "value": [
-      "up"
-    ]
+    "type": "Hotkey",
+    "value": "Up"
   },
-  "007": {
+  "clUnLPiRAoTp": {
     "name": "Arrow Down",
-    "type": "HOTKEY",
-    "value": [
-      "down"
-    ]
+    "type": "Hotkey",
+    "value": "Down"
   }
 }

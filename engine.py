@@ -131,11 +131,9 @@ class Engine:
 
 def main():
     engine = Engine(
-        gestures=reader.read_json(
-            "./model/gesture_classifier/gesture_classifier_labels.json"
-        ),
-        actions=reader.ActionReader("./configs/actions.json").read(),
-        bindings=reader.BindingReader("./configs/bindings.json").read(),
+        gestures=reader.read_gestures(),
+        actions=reader.ActionReader().read(),
+        bindings=reader.BindingReader().read(),
         cap_device=0,
         cap_width=960,
         cap_height=540,
